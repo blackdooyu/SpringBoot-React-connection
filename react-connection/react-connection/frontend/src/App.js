@@ -4,7 +4,7 @@ import axios from 'axios';
 
 function App() {
 
-
+  const [search,setSearch] = useState("");
   const [input,setInput] = useState("");
   const [users, setUsers] = useState([]);
   
@@ -20,14 +20,18 @@ function App() {
     }
 
   async function getData(){
-      await axios.get(baseUrl+"/todo")
+      await axios.get(baseUrl+"/todo",{
+        params: {
+          search: search
+        }
+      })
       .then((response) =>{
         setUsers(response.data);
       })
       .catch((error) => {
         console.error(error);
       })
-
+      setSearch("");
   }
 
   function insertTodo(e){
@@ -56,7 +60,6 @@ function App() {
         data: {
           id: id
         }
-        
       })
       .then((response) => {
         getData();
@@ -83,6 +86,12 @@ function App() {
     updateTodo();
     console.log("할 일을 완료했습니다.")
     
+  }
+
+  function changeSearch(e){
+     e.preventDefault();
+     setSearch(e.target.value);
+  
   }
 
 
@@ -120,13 +129,23 @@ function App() {
                 &nbsp; &nbsp;  ❌
               </label>
               </h3>
-
+                  
               </div>
           )
         }) 
         : null
+     }
 
-      }
+     <input type='text'
+      value={search}
+      onChange={changeSearch}
+      placeholder="             검색어 입력"
+      />
+    
+       <input type="button"
+       onClick={getData}
+       value="🔍"/>
+
     </div>
   );
 }

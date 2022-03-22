@@ -16,8 +16,9 @@ public class TodoController {
     private final TodoRepository todoRepository;
 
     @GetMapping("/todo")
-    public List<Todo> findAllTodo() {
-        return todoRepository.findAll();
+    public List<Todo> findAllTodo(@RequestParam String search) {
+
+        return todoRepository.searchTodo(search);
     }
 
     @PostMapping("/todo")
@@ -36,7 +37,7 @@ public class TodoController {
     @PutMapping("/todo")
     public String updateTodo(@RequestBody RequestData requestData) {
         if (requestData.getId() != null) {
-            todoComplete(requestData.getId());
+            todoCompleteUpdate(requestData.getId());
 
             return "성공";
         }
@@ -56,9 +57,13 @@ public class TodoController {
         return "실패";
     }
 
-    private void todoComplete(Long id) {
+    private void todoCompleteUpdate(Long id) {
         Todo findTodo = todoRepository.getById(id);
-        findTodo.setComplete(Complete.Y);
+        if (findTodo.getComplete() == Complete.N) {
+            findTodo.setComplete(Complete.Y);
+        }else{
+            findTodo.setComplete(Complete.N);
+        }
         todoRepository.flush();
     }
 
@@ -66,5 +71,6 @@ public class TodoController {
     static class RequestData{
         private Long id;
         private String name;
+        private String search;
     }
 }
