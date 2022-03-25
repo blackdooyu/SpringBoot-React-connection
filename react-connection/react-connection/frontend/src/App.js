@@ -7,11 +7,15 @@ function App() {
   const [search,setSearch] = useState("");
   const [input,setInput] = useState("");
   const [users, setUsers] = useState([]);
+  const [info,setInfo] = useState([]); 
+  const axios = require('axios');
+  axios.defaults.withCredentials = true;
   
   const baseUrl = "http://localhost:8080";
 
   useEffect(() =>{
     getData();
+    getInfo();
   }, []);
 
     function changeText(e){
@@ -33,6 +37,20 @@ function App() {
       })
       setSearch("");
   }
+
+   function getInfo(){
+    
+    const getInfo = async () => {
+      await axios.get(baseUrl+"/todo/info")
+      .then((response) => {
+        setInfo(response.data);
+      })
+      .catch((error) =>{
+        console.error(error);
+      })
+    }
+    getInfo();
+}
 
   function insertTodo(e){
     e.preventDefault();
@@ -142,9 +160,32 @@ function App() {
       placeholder="             검색어 입력"
       />
     
-       <input type="button"
+    <input type="button"
        onClick={getData}
        value="🔍"/>
+
+         <div>
+            <a href= "http://localhost:8080/oauth2/authorization/kakao"
+                
+               >
+              카카오톡 로그인
+               </a>
+
+          </div>
+          <div>
+            <a href= "http://localhost:8080/logout"
+                
+               >
+              카카오톡 로그아웃
+               </a>
+
+          </div>
+          
+          {
+            info ? 
+            <div>{info.name} {info.email}</div>
+            : <div> 노 </div>
+          }
 
     </div>
   );

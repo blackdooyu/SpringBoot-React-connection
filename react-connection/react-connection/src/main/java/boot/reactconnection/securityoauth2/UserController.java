@@ -18,11 +18,11 @@ import java.util.List;
 public class UserController {
 
     private final UserRepository userRepository;
+    private final HttpSession httpSession;
 
     @GetMapping("/user")
     public List<User> viewUser() {
         return userRepository.findAll();
     }
-
 
 }

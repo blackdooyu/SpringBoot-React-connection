@@ -1,5 +1,6 @@
 package boot.reactconnection.todo.controller;
 
+import boot.reactconnection.securityoauth2.SessionUser;
 import boot.reactconnection.todo.entity.Complete;
 import boot.reactconnection.todo.entity.Todo;
 import boot.reactconnection.todo.repository.TodoRepository;
@@ -7,6 +8,8 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @RestController
@@ -14,6 +17,15 @@ import java.util.List;
 public class TodoController {
 
     private final TodoRepository todoRepository;
+    private final HttpSession httpSession;
+
+    @GetMapping("/todo/info")
+    public SessionUser findUser(HttpServletRequest request) {
+        String requestedSessionId = request.getRequestedSessionId();
+        System.out.println(requestedSessionId);
+        SessionUser user = (SessionUser) httpSession.getAttribute("user");
+        return user;
+    }
 
     @GetMapping("/todo")
     public List<Todo> findAllTodo(@RequestParam String search) {
